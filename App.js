@@ -9,7 +9,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator headerMode='none'>
         <Stack.Screen name='Home' component={PriceCalculator} options={{title: 'Price Calculator'}} />
       </Stack.Navigator>
     </NavigationContainer>

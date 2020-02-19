@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "rn-calc-price",
+    "name": "Price Calculator",
     "slug": "rn-calc-price",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -24,7 +24,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.selvakumar.pricecalculator",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "dev.selvakumar.pricecalculator",
+      "versionCode": 1
     }
   }
 }
