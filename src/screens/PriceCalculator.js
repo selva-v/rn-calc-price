@@ -79,9 +79,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	circle: {
-		width: 250,
-		height: 250,
-		borderRadius: 125,
+		width: 220,
+		height: 220,
+		borderRadius: 110,
 		justifyContent: "center",
 		alignItems: 'center',
 		backgroundColor: '#0335B3',
@@ -142,7 +142,8 @@ const styles = StyleSheet.create({
 		color: '#0248BA'
 	},
   input: {
-		fontSize: 20,
+    fontSize: 20,
+    color: '#0335B3',
     borderColor: '#2576D9',
     borderWidth: 1,
     borderRadius: 5,
