@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, StatusBar, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
 const CURRENCY = 'S$';
 
@@ -9,19 +10,40 @@ const PriceCalculator = () => {
   const [price, setPrice ] = useState('');
   const [discount, setDiscount ] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  /* const [salePrice, setSalePrice] = useState('');
 
-  const calcPrice = (type, value) => {
-    if (type === 'price') {
-      setPrice(value);
-    } else {
-      setDiscount(value);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      console.log(status);
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    console.log('handle scanned');
+    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+  };
+
+  const handleScanner = () => {
+    if (hasPermission === null) {
+      console.log('Need permission');
+      return <Text>Requesting for camera permission</Text>;
     }
-    setSalePrice( price - (price * (discount / 100)) );
-  } */
+    if (hasPermission === false) {
+      console.log('Permission denied');
+      return <Text>No access to camera</Text>;
+    }
+    if (scanned) {
+      setScanned(false)
+    }
+  };
+  
+
   const handleChange = (newValue) => {
-    //newValue <= 100 ? setDiscount(newValue) : setErrorMessage('Please keyin number between 0 - 100');
-    
     if (newValue <= 100 ) {
       setDiscount(newValue);
       setErrorMessage('');
@@ -35,6 +57,7 @@ const PriceCalculator = () => {
     setDiscount('');
     setErrorMessage('');
   };
+  
   return(
     <React.Fragment>
 			<SafeAreaView style={styles.container}>
@@ -53,12 +76,17 @@ const PriceCalculator = () => {
 							</View>
 						</View>
 						<Text style={styles.savingsText}>You save: {CURRENCY} { (price - (price - (price * (discount / 100)))).toFixed(2) }</Text>
-            <TouchableOpacity style={styles.clearButton} onPress={() => handleClear()}>
-              <MaterialIcons name='clear' style={styles.clearButtonIcon} />
-              <Text style={styles.clearText}>Clear</Text>
-            </TouchableOpacity>
-						{/* <InputField name='Price' onValueChange={(priceValue) => calcPrice('price', priceValue)} />
-						<InputField name='Discount' onValueChange={(discountValue) => calcPrice('discount', discountValue)} /> */}
+            <View style={styles.controls}>
+              <TouchableOpacity style={styles.clearButton} onPress={() => handleClear()}>
+                <MaterialIcons name='clear' style={styles.clearButtonIcon} />
+                <Text style={styles.clearText}>Clear</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.scanButton} onPress={() => handleScanner()}>
+                <MaterialCommunityIcons name='barcode-scan' style={styles.scanButtonIcon} />
+                <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} />
+              </TouchableOpacity>
+            </View>
 
 					</View>
 				</LinearGradient>
@@ -153,6 +181,17 @@ const styles = StyleSheet.create({
 	savingsText: {
 		fontSize: 18,
 		color: '#fff',
+  },
+  controls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    width: '100%',
+    height: 30
+  },
+  scanButtonIcon: {
+    fontSize: 30,
+    color: '#FFF'
   },
   clearButton: {
     flexDirection: 'row',
