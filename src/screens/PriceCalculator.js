@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, StatusBar, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, StatusBar, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 const CURRENCY = 'S$';
 
 const PriceCalculator = () => {
   const [price, setPrice ] = useState('');
   const [discount, setDiscount ] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   /* const [salePrice, setSalePrice] = useState('');
 
   const calcPrice = (type, value) => {
@@ -18,12 +19,28 @@ const PriceCalculator = () => {
     }
     setSalePrice( price - (price * (discount / 100)) );
   } */
+  const handleChange = (newValue) => {
+    //newValue <= 100 ? setDiscount(newValue) : setErrorMessage('Please keyin number between 0 - 100');
+    
+    if (newValue <= 100 ) {
+      setDiscount(newValue);
+      setErrorMessage('');
+    } else {
+      setErrorMessage('Discount cannot be more than 100%');
+      setDiscount(discount);
+    }
+  };
+  const handleClear = () => {
+    setPrice('');
+    setDiscount('');
+    setErrorMessage('');
+  };
   return(
     <React.Fragment>
 			<SafeAreaView style={styles.container}>
 			<LinearGradient colors={['#0256C2', '#0248BA', '#0335B3']} style={styles.wrapper}>
 					<StatusBar barStyle='light-content' />
-					<View style={styles.wrapper}>
+					<View style={styles.innerContainer}>
 						<View style={styles.circle}>
 							<Text style={styles.priceText}>You pay</Text>
 							<Text style={styles.priceAmount}>{CURRENCY} { (price - (price * (discount / 100))).toFixed(2) }</Text>
@@ -36,6 +53,10 @@ const PriceCalculator = () => {
 							</View>
 						</View>
 						<Text style={styles.savingsText}>You save: {CURRENCY} { (price - (price - (price * (discount / 100)))).toFixed(2) }</Text>
+            <TouchableOpacity style={styles.clearButton} onPress={() => handleClear()}>
+              <MaterialIcons name='clear' style={styles.clearButtonIcon} />
+              <Text style={styles.clearText}>Clear</Text>
+            </TouchableOpacity>
 						{/* <InputField name='Price' onValueChange={(priceValue) => calcPrice('price', priceValue)} />
 						<InputField name='Discount' onValueChange={(discountValue) => calcPrice('discount', discountValue)} /> */}
 
@@ -48,15 +69,28 @@ const PriceCalculator = () => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Price</Text>
                 <View style={styles.fieldWrapper}>
-                  <Ionicons name='ios-pricetags' size={28} style={styles.textInputIcon} />
-                  <TextInput value={price} onChangeText={(newValue) => setPrice(newValue)} keyboardType={'decimal-pad'} style={styles.input} />
+                  <Ionicons name='ios-pricetags' style={styles.textInputIcon} />
+                  <TextInput
+                  value={price}
+                  onChangeText={(newValue) => setPrice(newValue)}
+                  keyboardType={'decimal-pad'}
+                  style={styles.input}
+                  placeholder="100"
+                />
                 </View>
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Discount</Text>
               <View style={styles.fieldWrapper}>
-                <MaterialCommunityIcons name='sale' size={28} style={styles.textInputIcon} />
-                <TextInput value={discount} onChangeText={(newValue) => setDiscount(newValue)} keyboardType={'decimal-pad'} style={styles.input} />
+                <MaterialCommunityIcons name='sale' style={styles.textInputIcon} />
+                <TextInput
+                  value={discount}
+                  onChangeText={(newValue) => handleChange(newValue)}
+                  keyboardType={'decimal-pad'}
+                  style={styles.input}
+                  placeholder="10"
+                />
+                {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
               </View>
             </View>
           </View>
@@ -75,18 +109,23 @@ const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
 		height: '100%',
-		padding: 20,
-		alignItems: 'center',
-	},
+    padding: 20,
+  },
+  innerContainer: {
+    width: '100%',
+		height: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
 	circle: {
 		width: 220,
 		height: 220,
-		borderRadius: 110,
+    borderRadius: 110,
 		justifyContent: "center",
 		alignItems: 'center',
 		backgroundColor: '#0335B3',
 		marginTop: 10,
-		marginBottom: 30
+		marginBottom: 10
 	},
 	priceText: {
 		fontSize: 22,
@@ -112,9 +151,20 @@ const styles = StyleSheet.create({
 		color: '#fff',
 	},
 	savingsText: {
-		fontSize: 17,
+		fontSize: 18,
 		color: '#fff',
-	},
+  },
+  clearButton: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  clearButtonIcon: {
+    fontSize: 24,
+    color: "#fff"
+  },
+  clearText: {
+    color: '#FFF'
+  },
   
 
 	formContainer: {
@@ -135,6 +185,7 @@ const styles = StyleSheet.create({
 		width: '100%'
 	},
 	textInputIcon: {
+    fontSize: 28,
 		position: 'absolute',
 		top: 10,
 		left: 10,
@@ -152,6 +203,9 @@ const styles = StyleSheet.create({
 		padding: 10,
 		backgroundColor: '#fff',
 		paddingLeft: 45,
+  },
+  errorMessage: {
+    color: 'red'
   }
 })
 
