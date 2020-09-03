@@ -30,7 +30,7 @@
     },
     "android": {
       "package": "dev.selvakumar.pricecalculator",
-      "versionCode": 1
+      "versionCode": 3
     }
   }
 }

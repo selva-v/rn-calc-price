@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, StatusBar, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, StatusBar, TouchableWithoutFeedback, Keyboard, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
@@ -36,10 +36,10 @@ const PriceCalculator = () => {
     setErrorMessage('');
   };
   return(
-    <React.Fragment>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
 			<SafeAreaView style={styles.container}>
+      <StatusBar barStyle='light-content' />
 			<LinearGradient colors={['#0256C2', '#0248BA', '#0335B3']} style={styles.wrapper}>
-					<StatusBar barStyle='light-content' />
 					<View style={styles.innerContainer}>
 						<View style={styles.circle}>
 							<Text style={styles.priceText}>You pay</Text>
@@ -96,7 +96,7 @@ const PriceCalculator = () => {
           </View>
         </TouchableWithoutFeedback>
 			</SafeAreaView>
-		</React.Fragment>
+		</KeyboardAvoidingView>
   );
 }
 
